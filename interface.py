@@ -1,9 +1,9 @@
 from tkinter import *
 from database import Database
 from tkinter import ttk
+import pymysql
 
 notebook = None
-
 
 entry_nombre = None
 entry_receta = None
@@ -12,32 +12,25 @@ entry_orden = None
 entry_armazon = None
 entry_taller = None
 
-
-
 db = None
 
-def main():
-    global db
-
-    db_config ={
-        host:  "localhost",
-        user: "root",
-        database: "optica", 
-        table: "clientes",
-    }
-
-    db = Database(**db_config)
-    db.connect()
 
 
+db_config ={
+    "host":  "localhost",
+    "user": "root",
+    "database": "optica", 
+    "table": "clientes",
+}
 
-    #Espacio para agregar operaciones a la base de datos por si queremos probar algo
+db = Database(**db_config)
+db.connect()
 
-    db.disconnect()
 
 
-    if __name__ == "__main__":
-        main()
+#Espacio para agregar operaciones a la base de datos por si queremos probar algo
+
+
 
 def agregar_cliente():
     global entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller, db
@@ -45,26 +38,20 @@ def agregar_cliente():
     nombre = entry_nombre.get()
     receta = entry_receta.get()
     cristales = entry_cristales.get()
-    Norden = entry_orden.get()
+    numero_orden = entry_orden.get()
     armazon = entry_armazon.get()
     taller = entry_taller.get()
 
     try:
-        consulta = "INSERT INTO clientes (nombre) VALUES (%s)"
+        consulta = "INSERT INTO clientes (nombre,receta,cristales,numero_orden,armazon,taller) VALUES (%s,%s,%s,%s,%s,%s)"
         cursor = db.get_cursor()
-        cursor.execute(consulta, (nombre,))
+        cursor.execute(consulta, (nombre,receta,cristales,numero_orden,armazon,taller))
 
         db.connection.commit()
         print("cliente agregado correctamente")
 
     except Exception as e:
         print("Error al agregar el cliente: ",e)
-
-
-
-
-
-
 
 
     entry_nombre.delete(0, END)
@@ -76,8 +63,9 @@ def agregar_cliente():
 
 
 def mostrar_pagina_agregar_cliente():
-    global notebook
-    global db, entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller
+    global notebook, db, entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller
+
+
 # Crear una nueva pestaña para agregar clientes
     frame_agregar_cliente =Frame(notebook)
     notebook.add(frame_agregar_cliente, text="Agregar Cliente")
@@ -115,10 +103,27 @@ def mostrar_pagina_agregar_cliente():
 
 
         # Botón para guardar el cliente
-    boton_guardar = Button(frame_agregar_cliente, text="Guardar Cliente", command=agregar_cliente)
+    boton_guardar = Button(frame_agregar_cliente, text="Guardar Cliente", command = agregar_cliente)
     boton_guardar.pack()
 
+def mostrar_consultar_cliente():
+    
+    label_nombre = Label(frame_agregar_cliente, text="Nombre:")
+    label_nombre.pack()
+    entry_nombre = Entry(frame_agregar_cliente)
+    entry_nombre.pack()
 
+    cliente = entry_nombre.get()
+
+    
+
+
+    
+    print("Funca")
+
+
+def mostrar_editar_cliente():
+    print("Holis")
 
 root = Tk()
 
@@ -139,6 +144,8 @@ menu_cascade = Menu(menu_principal)
 menu_principal.add_cascade(label ="Opciones", menu = menu_cascade)
 
 menu_cascade.add_command(label="Agregar cliente", command=mostrar_pagina_agregar_cliente)
+menu_cascade.add_command(label = "Consultar cliente", command = mostrar_consultar_cliente)
+menu_cascade.add_command(label = "Editar cliente", command = mostrar_editar_cliente)
 
 
 
