@@ -1,6 +1,7 @@
 from tkinter import *
 from database import Database
 from tkinter import ttk
+from tkinter import messagebox
 import pymysql
 
 notebook = None
@@ -61,6 +62,25 @@ def agregar_cliente():
     entry_armazon.delete(0, END)
     entry_taller.delete(0, END)
 
+def consultar_cliente():
+    global db , entry_nombre
+
+    if entry_nombre:
+        cliente = entry_nombre.get()
+
+        cursor = db.get_cursor()
+        cursor.execute("SELECT * FROM clientes WHERE nombre =%s", (cliente,))
+
+        resultado = cursor.fetchone()
+
+        if resultado:
+            messagebox.showinfo(f"Cliente encontrado: {resultado[0]}")
+            print(resultado)
+        else:
+            messagebox.showerror("Error, cliente no econtrado")
+    else:
+        messagebox.showerror("Error, el campo no esta definido ")
+
 
 def mostrar_pagina_agregar_cliente():
     global notebook, db, entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller
@@ -107,19 +127,25 @@ def mostrar_pagina_agregar_cliente():
     boton_guardar.pack()
 
 def mostrar_consultar_cliente():
+    global entry_nombre
+
+    frame_consultar_cliente = Frame(notebook)
+    notebook.add(frame_consultar_cliente, text="Consultar Cliente")
     
-    label_nombre = Label(frame_agregar_cliente, text="Nombre:")
+    label_nombre = Label(frame_consultar_cliente, text="Nombre:")
     label_nombre.pack()
-    entry_nombre = Entry(frame_agregar_cliente)
+
+    entry_nombre_var = StringVar()  
+    entry_nombre = Entry(frame_consultar_cliente, textvariable=entry_nombre_var)
     entry_nombre.pack()
 
-    cliente = entry_nombre.get()
 
+
+
+    boton_consultar = Button(frame_consultar_cliente, text="Consultar" , command=consultar_cliente)
+    boton_consultar.pack()
     
-
-
     
-    print("Funca")
 
 
 def mostrar_editar_cliente():
