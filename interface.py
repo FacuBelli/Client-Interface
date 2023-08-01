@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import pymysql
 
+
 notebook = None
 
 entry_nombre = None
@@ -63,7 +64,7 @@ def agregar_cliente():
     entry_taller.delete(0, END)
 
 def consultar_cliente():
-    global db , entry_nombre
+    global db , entry_nombre, notebook
 
     if entry_nombre:
         cliente = entry_nombre.get()
@@ -73,13 +74,32 @@ def consultar_cliente():
 
         resultado = cursor.fetchone()
 
+        
+
         if resultado:
-            messagebox.showinfo(f"Cliente encontrado: {resultado[0]}")
             print(resultado)
+            ventana_detalle = Toplevel(root)
+            ventana_detalle.title("Detalles del cliente")
+            ventana_detalle.iconbitmap("logo.ico")
+            ventana_detalle.resizable(1,1)
+
+            # Mostrar los detalles del cliente en el frame
+            for i, columna in enumerate(cursor.description):
+                etiqueta = ttk.Label(ventana_detalle, text=columna[0] + ": ")
+                etiqueta.grid(row=i, column=0, sticky="w")
+
+                valor = ttk.Label(ventana_detalle, text=resultado[i])
+                valor.grid(row=i, column=1, sticky="e")
+            
+       
         else:
             messagebox.showerror("Error, cliente no econtrado")
     else:
         messagebox.showerror("Error, el campo no esta definido ")
+
+
+
+
 
 
 def mostrar_pagina_agregar_cliente():
@@ -138,9 +158,6 @@ def mostrar_consultar_cliente():
     entry_nombre_var = StringVar()  
     entry_nombre = Entry(frame_consultar_cliente, textvariable=entry_nombre_var)
     entry_nombre.pack()
-
-
-
 
     boton_consultar = Button(frame_consultar_cliente, text="Consultar" , command=consultar_cliente)
     boton_consultar.pack()
