@@ -2,7 +2,7 @@ from tkinter import *
 from database import Database
 from tkinter import ttk
 from tkinter import messagebox
-import pymysql
+import pyodbc
 
 
 notebook = None
@@ -13,6 +13,7 @@ entry_cristales = None
 entry_orden = None
 entry_armazon = None
 entry_taller = None
+entry_graduacion = None
 
 db = None
 
@@ -35,7 +36,7 @@ db.connect()
 
 
 def agregar_cliente():
-    global entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller, db
+    global entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller,entry_graduacion ,db
     
     nombre = entry_nombre.get()
     receta = entry_receta.get()
@@ -43,11 +44,12 @@ def agregar_cliente():
     numero_orden = entry_orden.get()
     armazon = entry_armazon.get()
     taller = entry_taller.get()
+    graduacion = entry_graduacion.get()
 
     try:
-        consulta = "INSERT INTO clientes (nombre,receta,cristales,numero_orden,armazon,taller) VALUES (%s,%s,%s,%s,%s,%s)"
+        consulta = "INSERT INTO clientes (nombre,receta,cristales,numero_orden,armazon,taller,graduacion) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         cursor = db.get_cursor()
-        cursor.execute(consulta, (nombre,receta,cristales,numero_orden,armazon,taller))
+        cursor.execute(consulta, (nombre,receta,cristales,numero_orden,armazon,taller,graduacion))
 
         db.connection.commit()
         print("cliente agregado correctamente")
@@ -62,6 +64,7 @@ def agregar_cliente():
     entry_orden.delete(0, END)
     entry_armazon.delete(0, END)
     entry_taller.delete(0, END)
+    entry_graduacion.delete(0, END)
 
 def consultar_cliente():
     global db , entry_nombre, notebook
@@ -103,7 +106,7 @@ def consultar_cliente():
 
 
 def mostrar_pagina_agregar_cliente():
-    global notebook, db, entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller
+    global notebook, db, entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller, entry_graduacion
 
 
 # Crear una nueva pestaña para agregar clientes
@@ -141,8 +144,14 @@ def mostrar_pagina_agregar_cliente():
     entry_taller = Entry(frame_agregar_cliente)
     entry_taller.pack()
 
+    label_graduacion = Label(frame_agregar_cliente, text = "La receta se hizo en el local?")
+    label_graduacion.pack()
+    entry_graduacion = Entry(frame_agregar_cliente)
+    entry_graduacion.pack()
 
-        # Botón para guardar el cliente
+
+
+    # Botón para guardar el cliente
     boton_guardar = Button(frame_agregar_cliente, text="Guardar Cliente", command = agregar_cliente)
     boton_guardar.pack()
 
@@ -162,11 +171,52 @@ def mostrar_consultar_cliente():
     boton_consultar = Button(frame_consultar_cliente, text="Consultar" , command=consultar_cliente)
     boton_consultar.pack()
     
+#AGREGAR TIPO DE ARREGLO Y SI LA RECET FUE DEL CLIENTE O DEL LOCAL
+
+
+
+def editar_cliente():
+    editar_nombre = 0
+    editar_receta = 0
+    editar_cristales = 0
+    editar_taller = 0
+    editar_orden = 0
+    editar_armazon = 0
+
+    # update = ("UPDATE clientes SET (%s)"+ columna)
+
+def mostrar_editar_cliente():
+
+    global entry_nombre
+
+    ventana_edicion = Toplevel(root)
+    ventana_edicion.title("Editar cliente")
+    ventana_edicion.iconbitmap("logo.ico")
+    ventana_edicion.resizable(1,1)
+
+
+
+    btn_buscar = Button(ventana_edicion, text="Buscar", command = mostrar_consultar_cliente )
+    btn_buscar.pack()
+
     
 
 
-def mostrar_editar_cliente():
-    print("Holis")
+    #Agregar una opcion que sea como quiere buscar al cliente (nombre, taller, cristales etc), con checkbox:
+
+    busqueda_nombre = buscar_nombre.get()
+
+    busqueda_cristales = buscar_cristales.get()
+
+
+    busqueda_taller = buscar_taller.get()
+
+    where_clause = "" #esta es la sentencia SQL WHERE
+    
+    # edicion_nombre = Label(ventana_edicion, text = "Nombre: ")
+    # edicion_nombre.pack()
+    # entry_edicion_nombre = Entry(ventana_edicion )
+    # entry_edicion_nombre.pack()
 
 root = Tk()
 
@@ -189,9 +239,13 @@ menu_principal.add_cascade(label ="Opciones", menu = menu_cascade)
 menu_cascade.add_command(label="Agregar cliente", command=mostrar_pagina_agregar_cliente)
 menu_cascade.add_command(label = "Consultar cliente", command = mostrar_consultar_cliente)
 menu_cascade.add_command(label = "Editar cliente", command = mostrar_editar_cliente)
+menu_cascade.add_command(label = "Arreglos", command = "holis")
 
 
-
+#variables de busqueda
+buscar_nombre = BooleanVar()
+buscar_taller = BooleanVar()
+buscar_cristales = BooleanVar()
 
 notebook.pack()
 root.mainloop()
