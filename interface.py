@@ -20,8 +20,8 @@ db = None
 
 
 db_config ={
-    "host":  "localhost",
-    "user": "root",
+    "host":  "FACU\SQLEXPRESS",
+    "user": "FACU\Chevrolet",
     "database": "optica", 
     "table": "clientes",
 }
@@ -32,7 +32,6 @@ db.connect()
 
 
 #Espacio para agregar operaciones a la base de datos por si queremos probar algo
-
 
 
 def agregar_cliente():

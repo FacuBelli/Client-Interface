@@ -12,11 +12,12 @@ class Database:
         self.connection = None
 
     def connect(self):
-        self.connection = pymysql.connect(
-            host = self.host,
-            user = self.user,
-            database = self.database,
-        )
+        try:
+            connection_string = f"driver = {{SQL Server}}; server ={self.host}; database = {self.database}; UID = {self.user}; table = {self.table}"
+            print("Se conecto correctamente")
+
+        except pyodbc.Error as e:
+            print("Error al conectar a la base: ",e)
 
     def disconnect(self):
         if self.connection:
