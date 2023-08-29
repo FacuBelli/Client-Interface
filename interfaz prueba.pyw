@@ -1,36 +1,33 @@
-from tkinter import *
+import tkinter as tk
 
-def mostrar_mensaje():
-    etiqueta.config(text="¡Hola, has hecho clic!")
+def mostrar_frame(frame):
+    frame.tkraise()
 
-# Crear la ventana principal
-root = Tk()
-root.title("Interfaz clientes")
+# Configuración inicial de la ventana
+ventana = tk.Tk()
+ventana.title("Frames Visibles")
+ventana.geometry("800x600")
 
+# Crear frames
+frame1 = tk.Frame(ventana, bg="blue")
+frame2 = tk.Frame(ventana, bg="green")
+frame3 = tk.Frame(ventana, bg="red")
 
-root.resizable(1,1) #Esto es para permitir la redimension de la ventana, son de tipo boolean y corresponden a width y height respectivamente
+# Agregar contenido a los frames
+# ...
 
-#root.geometry("300x200")
+# Mostrar el primer frame por defecto
+frame1.pack(fill="both", expand=True)
 
-root.config(bg="#777")
+# Botones para cambiar entre frames
+boton_frame1 = tk.Button(ventana, text="Frame 1", command=lambda: mostrar_frame(frame1))
+boton_frame1.pack(side="left")
 
-root.iconbitmap("logo.ico")
+boton_frame2 = tk.Button(ventana, text="Frame 2", command=lambda: mostrar_frame(frame2))
+boton_frame2.pack(side="left")
 
-myFrame = Frame() #A un frame hay que darle tamaño
-myFrame.pack() #Hayq ue empaquetar el frame pq sino queda fuera de la raiz
+boton_frame3 = tk.Button(ventana, text="Frame 3", command=lambda: mostrar_frame(frame3))
+boton_frame3.pack(side="left")
 
-myFrame.config(bg="#000")
-
-myFrame.config(width="650", height="350", relief="groove")
-myFrame.config(bd=35)
-
-
-# Agregar widgets
-# etiqueta = root.Label(root, text="¡Hola, bienvenido!")
-# etiqueta.pack()
-
-# boton = tk.Button(root, text="¡Haz clic!", command=mostrar_mensaje)
-# boton.pack()
-
-# Mostrar la interfaz
-root.mainloop()
+# Iniciar la aplicación
+ventana.mainloop()

@@ -20,7 +20,7 @@ db = None
 
 
 db_config ={
-    "host":  "FACU\SQLEXPRESS",
+    "server":  "FACU\SQLEXPRESS",
     "user": "FACU\Chevrolet",
     "database": "optica", 
     "table": "clientes",
@@ -46,9 +46,9 @@ def agregar_cliente():
     graduacion = entry_graduacion.get()
 
     try:
-        consulta = "INSERT INTO clientes (nombre,receta,cristales,numero_orden,armazon,taller,graduacion) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        consulta = "INSERT INTO clientes (nombre,receta,cristales,numero_orden,armazon,taller,graduacion) VALUES (?,?,?,?,?,?,?)"
         cursor = db.get_cursor()
-        cursor.execute(consulta, (nombre,receta,cristales,numero_orden,armazon,taller,graduacion))
+        cursor.execute(consulta, nombre,receta,cristales,numero_orden,armazon,taller,graduacion)
 
         db.connection.commit()
         print("cliente agregado correctamente")
@@ -72,7 +72,7 @@ def consultar_cliente():
         cliente = entry_nombre.get()
 
         cursor = db.get_cursor()
-        cursor.execute("SELECT * FROM clientes WHERE nombre =%s", (cliente,))
+        cursor.execute("SELECT * FROM clientes WHERE nombre =?", (cliente,))
 
         resultado = cursor.fetchone()
 
@@ -182,20 +182,18 @@ def editar_cliente():
     editar_orden = 0
     editar_armazon = 0
 
-    # update = ("UPDATE clientes SET (%s)"+ columna)
+    update = ("UPDATE clientes SET (?)"+ columna)
 
 def mostrar_editar_cliente():
 
     global entry_nombre
 
-    ventana_edicion = Toplevel(root)
-    ventana_edicion.title("Editar cliente")
-    ventana_edicion.iconbitmap("logo.ico")
-    ventana_edicion.resizable(1,1)
+    frame_editar_cliente = Frame(notebook)
+    notebook.add(frame_editar_cliente, text="Editar Cliente")
 
 
 
-    btn_buscar = Button(ventana_edicion, text="Buscar", command = mostrar_consultar_cliente )
+    btn_buscar = Button(frame_editar_cliente, text="Buscar", command = mostrar_consultar_cliente )
     btn_buscar.pack()
 
     

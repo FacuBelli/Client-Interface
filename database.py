@@ -1,11 +1,9 @@
 import pyodbc
 
 
-
-
 class Database:
-    def __init__(self,host,user,database,table):
-        self.host = host
+    def __init__(self,server,user,database,table):
+        self.server = server
         self.user = user
         self.database = database
         self.table = table
@@ -13,12 +11,14 @@ class Database:
 
     def connect(self):
         try:
-            connection_string = f"driver = {{SQL Server}}; server ={self.host}; database = {self.database}; UID = {self.user}; table = {self.table}"
+            connection_string = f'DRIVER=SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.user}; Trusted_Connection=yes;'
+            self.connection = pyodbc.connect(connection_string)
+            
+
             print("Se conecto correctamente")
 
         except pyodbc.Error as e:
-            print("Error al conectar a la base: ",e)
-
+            print("Error al conectar a la base de datos: ",e)
     def disconnect(self):
         if self.connection:
             self.connection.close()
