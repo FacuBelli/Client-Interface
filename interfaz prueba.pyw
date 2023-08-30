@@ -1,33 +1,31 @@
 import tkinter as tk
 
-def mostrar_frame(frame):
-    frame.tkraise()
+def mostrar_contenido(opcion):
+    contenido_frame.config(text=f"Mostrando contenido de {opcion}")
 
-# Configuración inicial de la ventana
+# Crear la ventana principal
 ventana = tk.Tk()
-ventana.title("Frames Visibles")
-ventana.geometry("800x600")
+ventana.title("Interfaz Dividida")
 
-# Crear frames
-frame1 = tk.Frame(ventana, bg="blue")
-frame2 = tk.Frame(ventana, bg="green")
-frame3 = tk.Frame(ventana, bg="red")
+# Crear un frame para los botones y el logo
+botones_frame = tk.Frame(ventana)
+botones_frame.pack(side=tk.LEFT, padx=10, pady=10)
 
-# Agregar contenido a los frames
-# ...
+# Crear botones y logo en el frame de botones
+logo = tk.Label(botones_frame, text="Logo", font=("Helvetica", 16))
+logo.pack(pady=10)
 
-# Mostrar el primer frame por defecto
-frame1.pack(fill="both", expand=True)
+boton_opcion1 = tk.Button(botones_frame, text="Agregar cliente", command=lambda: mostrar_contenido("Opción 1"))
+boton_opcion1.pack(pady=5)
 
-# Botones para cambiar entre frames
-boton_frame1 = tk.Button(ventana, text="Frame 1", command=lambda: mostrar_frame(frame1))
-boton_frame1.pack(side="left")
+boton_opcion2 = tk.Button(botones_frame, text="Opción 2", command=lambda: mostrar_contenido("Opción 2"))
+boton_opcion2.pack(pady=5)
 
-boton_frame2 = tk.Button(ventana, text="Frame 2", command=lambda: mostrar_frame(frame2))
-boton_frame2.pack(side="left")
+# Crear un frame para mostrar el contenido
+contenido_frame = tk.Label(ventana, text="", font=("Helvetica", 16))
+contenido_frame.pack(side=tk.RIGHT, padx=10, pady=10)
 
-boton_frame3 = tk.Button(ventana, text="Frame 3", command=lambda: mostrar_frame(frame3))
-boton_frame3.pack(side="left")
-
-# Iniciar la aplicación
+# Iniciar la interfaz
 ventana.mainloop()
+
+
