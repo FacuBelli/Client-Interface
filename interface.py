@@ -34,7 +34,7 @@ db_config ={
 db = Database(**db_config)
 db.connect()
 
-funciones = Functions
+
 
 #Espacio para agregar operaciones a la base de datos por si queremos probar algo
 
@@ -87,7 +87,7 @@ def consultar_cliente():
             print(resultado)
             ventana_detalle = Toplevel(ventana)
             ventana_detalle.title("Detalles del cliente")
-            ventana_detalle.iconbitmap("logo.ico")
+            ventana_detalle.iconbitmap("logoICO.ico")
             ventana_detalle.resizable(1,1)
 
             # Mostrar los detalles del cliente en el frame
@@ -194,6 +194,33 @@ def mostrar_consultar_cliente():
 
 
 def editar_cliente():
+    global entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller,entry_graduacion ,db
+
+
+    nombre = entry_nombre.get(nombre)
+    receta = entry_receta.get(receta)
+    cristales = entry_cristales.get(cristales)
+    numero_orden = entry_orden.get(numero_orden)
+    armazon = entry_armazon.get(armazon)
+    taller = entry_taller.get(taller)
+    graduacion = entry_graduacion.get(graduacion)
+
+
+    try:
+        
+        consulta = "SELECT * FROM   clientes"
+        cursor = db.get_cursor()
+        cursor.execute(consulta, nombre,receta,cristales,numero_orden,armazon,taller,graduacion)
+        if consulta == True:
+            update = ("UPDATE clientes SET (?,?,?,?,?,?,?)")
+
+        db.connection.commit()
+        print("cliente agregado correctamente")
+
+    except Exception as e:
+        print("Error al agregar el cliente: ",e)
+
+
     editar_nombre = 0
     editar_receta = 0
     editar_cristales = 0
@@ -201,30 +228,30 @@ def editar_cliente():
     editar_orden = 0
     editar_armazon = 0
 
-    update = ("UPDATE clientes SET (?)"+ columna)
+    
 
 def mostrar_editar_cliente():
 
     global entry_nombre
 
-    frame_editar_cliente = Frame(notebook)
-    notebook.add(frame_editar_cliente, text="Editar Cliente")
+    pantalla = Frame(ventana)
+    pantalla.pack(side=RIGHT, padx=10, pady=10)
 
-    label_nombre = Label(frame_editar_cliente, text="Nombre cliente:")
+    label_nombre = Label(pantalla, text="Nombre cliente:")
     label_nombre.pack()
 
     entry_nombre_var = StringVar()  
-    entry_nombre = Entry(frame_editar_cliente, textvariable=entry_nombre_var)
+    entry_nombre = Entry(pantalla, textvariable=entry_nombre_var)
     entry_nombre.pack()
 
-    btn_buscar = Button(frame_editar_cliente, text="Buscar", command = consultar_cliente )
+    btn_buscar = Button(pantalla, text="Buscar", command = editar_cliente )
     btn_buscar.pack()
 
 
-    busqueda_nombre = buscar_nombre.get()
+    
 
 
-    where_clause = "" #esta es la sentencia SQL WHERE
+    
     
 
 
@@ -239,10 +266,11 @@ def mostrar_base():
         cursor.execute("SELECT * FROM clientes")
         results = cursor.fetchall()
 
-        ventana_resultados = Toplevel(root)
-        ventana_resultados.title("Resultados de la Base de Datos")
+        pantalla = Frame(ventana)
+        pantalla.pack(side=RIGHT, padx=10, pady=10)
+        ventana.title("Resultados de la Base de Datos")
 
-        resultados_text = Text(ventana_resultados)
+        resultados_text = Text(pantalla)
         
         resultados_text.pack()
 
@@ -258,26 +286,46 @@ def mostrar_base():
 ventana = Tk()
 ventana.title("Centro Optico Illodo - Clientes")
 ventana.geometry("500x500")
+ventana.iconbitmap("logoICO.ico")
+ventana.configure(bg = "#fff")
 
 pantalla = Frame(ventana)
-pantalla.pack(side = TOP )
 
-# Crear un frame para los botones y el logo
+pantalla.pack(side = TOP)
+
+#Frame del logo
+label = Label(ventana)
+label.pack(padx=10,pady=10)
+imagen = PhotoImage(file="C:/Users/Chevrolet/Desktop/Client-Interface/logo.ppm")  
+imagen_ajustada = imagen.subsample(3,3)
+
+label.config(image=imagen_ajustada)
+label.image = imagen_ajustada
+
+
+
+
+
+# Frame para los botones y el logo
 botones_frame = Frame(ventana)
 botones_frame.pack(side=LEFT, padx=10, pady=10)
+botones_frame.configure(bg = "blue")
 
 # Crear botones y logo en el frame de botones
-logo = Label(botones_frame, text="Logo", font=("Helvetica", 16))
-logo.pack(pady=10)
+"""logo = Label(botones_frame, text="Logo", font=("Helvetica", 16))
+logo.pack(pady=10)"""
 
-boton_agregar_cliente = Button(botones_frame, text="Agregar cliente", command=mostrar_pagina_agregar_cliente)
+boton_agregar_cliente = Button(botones_frame, text="Agregar cliente ", command=mostrar_pagina_agregar_cliente)
 boton_agregar_cliente.pack(pady=5)
 
 boton_consulta_cliente = Button(botones_frame, text="Consultar cliente", command=mostrar_pagina_consultar_cliente)
 boton_consulta_cliente.pack(pady=5)
 
-boton_editar_cliente = Button(botones_frame, text="Editar cliente", command=mostrar_pagina_editar_cliente)
+boton_editar_cliente = Button(botones_frame, text="Editar cliente ", command=mostrar_pagina_editar_cliente)
 boton_editar_cliente.pack(pady=5)
+
+boton_mostrar_base = Button(botones_frame, text="Ver base de datos", command=mostrar_base)
+boton_mostrar_base.pack(pady=5)
 
 # Crear un frame para mostrar el contenido
 contenido_frame = Label(ventana, text="", font=("Helvetica", 16))
