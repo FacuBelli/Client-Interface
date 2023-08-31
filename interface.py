@@ -1,7 +1,5 @@
 from tkinter import *
-
 from database import Database
-from db_functions import Functions
 from tkinter import ttk
 from tkinter import messagebox
 import pyodbc
