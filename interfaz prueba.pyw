@@ -65,13 +65,9 @@ def ver_base():
 
 def mostrar_base():
     global db, contenido_actual
-
-
     if contenido_actual != None:
         contenido_actual.destroy()
     
-    
-
     info = ttk.Treeview(marco)
     info.grid(column= 0, row = 8, columnspan=8, padx=15)
 
@@ -113,6 +109,7 @@ def mostrar_base():
 
     def eliminar_cliente():
         global db, cursor
+        
 
         selected_item = info.selection()
         if not selected_item:
@@ -134,9 +131,41 @@ def mostrar_base():
         except Exception as e:
             txtmessage = Label(marco, text = "Seleccione el registro a eliminar", fg="green").grid(column= 0, row = 6, columnspan=7)
             print("Error: ",e)
+
+
+
         
     boton_eliminar_cliente = Button(marco, text="Eliminar cliente ", command=eliminar_cliente)
     boton_eliminar_cliente.grid(column=4, row = 1,padx=40)
+
+def editar_cliente():
+    global entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller,entry_graduacion ,db
+    mostrar_base()
+
+    nombre = entry_nombre.get()
+    receta = entry_receta.get()
+    cristales = entry_cristales.get()
+    numero_orden = entry_orden.get()
+    armazon = entry_armazon.get()
+    taller = entry_taller.get()
+    graduacion = entry_graduacion.get()
+
+
+
+
+    try:
+        
+        consulta = "SELECT * FROM   clientes"
+        cursor = db.get_cursor()
+        cursor.execute(consulta, nombre,receta,cristales,numero_orden,armazon,taller,graduacion)
+        if consulta == True:
+            update = ("UPDATE clientes SET (?,?,?,?,?,?,?)")
+
+        db.connection.commit()
+        print("cliente agregado correctamente")
+
+    except Exception as e:
+        print("Error al agregar el cliente: ",e)
 
 def agregar_cliente():
     global db,entry_nombre, entry_receta, entry_cristales, entry_orden, entry_armazon, entry_taller,entry_graduacion
@@ -156,7 +185,7 @@ def agregar_cliente():
 
         db.connection.commit()
         
-        txtmessage = Label(marco, text = "Cliente agregado con exito", fg="green").grid(column= 0, row = 15, columnspan=7)
+        txtmessage = Label(marco, text = "Cliente agregado con exito", fg="green").grid(column= 5, row = 15, columnspan=2)
         
 
     except Exception as e:
@@ -247,8 +276,10 @@ def mostrar_consultar_cliente():
     boton_consultar = Button(pantalla_consulta, text="Consultar" , command=consultar_cliente)
     boton_consultar.pack()
 
-def consultar_cliente():
-    global db , entry_nombre
+def consultar_cliente(): #ARREGLAR QUE SE SUPERPONE LA INFO DEL CLIENTE
+    global db , entry_nombre, contenido_actual
+
+
 
     if entry_nombre:
         cliente = entry_nombre.get()
@@ -259,12 +290,17 @@ def consultar_cliente():
         resultado = cursor.fetchone()
 
         
-
+        if contenido_actual != None:
+            contenido_actual.destroy()
         if resultado:
-            print(resultado)
+
             ventana_detalle = Frame(ventana)
             ventana_detalle.configure(bg = "#fff")
             ventana_detalle.pack(side=TOP, padx=50)
+
+
+
+            contenido_actual = ventana_detalle
             
 
             # Mostrar los detalles del cliente en el frame
@@ -275,6 +311,7 @@ def consultar_cliente():
                 valor = ttk.Label(ventana_detalle, text=resultado[i])
                 
                 valor.grid(row=i, column=1, sticky="e")
+
             
             
        
@@ -302,7 +339,7 @@ boton_agregar_cliente.grid(column = 1, row=1,padx=40)
 boton_consulta_cliente = Button(marco, text="Consultar cliente", command=mostrar_pagina_consultar_cliente)
 boton_consulta_cliente.grid(column=2,row=1,padx=40)
 
-boton_editar_cliente = Button(marco, text="Editar cliente ") #command=mostrar_pagina_editar_cliente)
+boton_editar_cliente = Button(marco, text="Editar cliente ", command=editar_cliente)
 boton_editar_cliente.grid(column=3, row = 1,padx=40)
 
 
